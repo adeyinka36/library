@@ -37,6 +37,16 @@ app.use((req,res,next)=>{
 app.use("/api/",router)
 
 
+
+
+if(process.env.NODE_ENV==="production"){
+  app.use(express.static('client/build'))
+
+  app.get('*',(req,res)=>{
+      res.sendFile(path.resolve(__dirname,'client','build','index.html'))
+  })
+}
+
 // send 404 if no other route matched
 app.use((req, res) => {
   res.status(404).json({

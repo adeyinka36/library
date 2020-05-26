@@ -19,8 +19,7 @@ export class Provider extends Component{
         }
 make=(user)=>{
           this.setState({authentication:user})
-          console.log(this.state.authentication)
-          console.log("wow")
+         
         }   
 signOut=()=>{
   console.log("signin out")

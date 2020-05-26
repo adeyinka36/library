@@ -16,7 +16,7 @@ export default class Data extends Component{
 
     
 deleteCourse(id,emailAddress,password){
-    return fetch(`http://localhost:5000/api/courses/${id}`,{
+    return fetch(`/api/courses/${id}`,{
         method:"DELETE",
         headers: new Headers({
        "Authorization": "Basic "+ btoa(emailAddress+":"+password)
@@ -24,7 +24,7 @@ deleteCourse(id,emailAddress,password){
 })
 }
    updateCourse(val,obj,emailAddress,password){
-       return fetch(`http://localhost:5000/api/courses/${val}`,{
+       return fetch(`/api/courses/${val}`,{
         method:"PUT",
         headers:{
            'Content-Type': 'application/json',
@@ -34,11 +34,11 @@ deleteCourse(id,emailAddress,password){
 })
    }
     getCourses(){
-       return  fetch(`http://localhost:5000/api/courses`)
+       return  fetch(`/api/courses`)
 
     }
     getCourseDetail(val){
-        return fetch(`http://localhost:5000/api/courses/${val}`)
+        return fetch(`/api/courses/${val}`)
     }
     // updateCourse(val){
     //     return fetch(`http://localhost:5000/api/courses/${val}`)
@@ -48,7 +48,7 @@ deleteCourse(id,emailAddress,password){
          this._isMounted=true
         // let encodedCrendtials=btoa(`${emailAddress}:${password}`)
         // let unmounted = false
-         return fetch(`http://localhost:5000/api/users`,{
+         return fetch(`/api/users`,{
              method:"GET",
              headers: new Headers({
             "Authorization": "Basic "+ btoa(emailAddress+":"+password)
@@ -59,7 +59,7 @@ deleteCourse(id,emailAddress,password){
 
 
 createNewCourse(obj,emailAddress,password){
-    return fetch(`http://localhost:5000/api/courses/`,{
+    return fetch(`/api/courses/`,{
              method:"POST",
              headers:{
                 'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ createNewCourse(obj,emailAddress,password){
 
 
 createUser(obt){
-    return fetch(`http://localhost:5000/api/users`,{
+    return fetch(`/api/users`,{
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body:JSON.stringify(obt)
