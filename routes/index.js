@@ -3,6 +3,7 @@ const router= express.Router();
 const models= require('../models');
 const bcrypt = require('bcryptjs');
 const auth = require('basic-auth');
+const mongoose = require("mongoose");
 const { User }= models;
 const { Course }= models;
 
