@@ -321,8 +321,13 @@ else{
     if (!userCourse){return res.status(404).json({message:"Course not found"})}
     const userIdofCourse= userCourse.userId
     if (req.currentUser.id===userIdofCourse){
-       const courseTodelete = await Course.findByPk(req.params.id)
-      await courseTodelete.destroy()
+        
+        mongoose.connection.on("error",()=>console.log(`error connecing with database: ${err}`))
+       await  mongoose.connection.once("open",async()=>{Course.deleteOne(req.params.id) })
+       
+      
+      // const courseTodelete = await Course.findByPk(req.params.id)
+      // await courseTodelete.destroy()
       
     res.status(204).end()
 }
