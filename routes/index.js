@@ -309,7 +309,12 @@ else{
 
     // Deletes a course and returns no content
   router.delete('/courses/:id',authenticate,async (req,res)=>{
-    let userCourse = await Course.findByPk(req.params.id)
+    let userCourse 
+        mongoose.connection.on("error",()=>console.log(`error connecing with database: ${err}`))
+        mongoose.connection.once("open",async()=>{userCourse= await Course.findById(req.params.id) })
+       
+    
+    // = await Course.findByPk(req.params.id)
     
     
     
