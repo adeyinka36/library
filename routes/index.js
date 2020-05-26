@@ -147,11 +147,12 @@ if(emailValidationResult && !doesEmailAlreadyExist ){
   // Returns a list of courses
   router.get('/courses',async (req,res)=>{
         let exceptions={}
-        let course
+        let courses
         mongoose.connection.on('error',(err)=>{console.log(`error with getting data from database:${err}`)})
-        await mongoose.connection.once("open",async()=>{ course= await  Course.find({select:"_id",select:"title",select:"description",select:"estimatedTime",select:"materialsNeeded"})
+        await mongoose.connection.once("open",async()=>{ courses= await  Course.find({select:"_id",select:"title",select:"description",select:"estimatedTime",select:"materialsNeeded"})
         .populate({path:'User',select:"emailAdress",select:"firstName",select:"lastName"})})
-
+         
+        console.log(courses)
 
       //   let courses = await Course.findAll({
       //   attributes: {
