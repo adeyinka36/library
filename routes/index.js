@@ -148,10 +148,9 @@ if(emailValidationResult && !doesEmailAlreadyExist ){
   router.get('/courses',async (req,res)=>{
         let exceptions={}
       
-        let  courses
+      
         
-        await  Course.find()
-        .populate({path:'User',select:"emailAdress",select:"firstName",select:"lastName"})
+        await  Course.find({},{password:0}).populate('User')
         .then(response=>{
           console.log(response)
          
