@@ -26,7 +26,7 @@ const authenticate= async (req,res,next)=>{
    
    if(credentials){
      let gottenUsers
-await gottenUsers.find().then(response=>gottenUsers=response)
+await Users.find().then(response=>gottenUsers=response)
       //  let  gottenUsers =  await User.findAll();
       //  gottenUsers=gottenUsers.map(u=>u.toJSON());
 
