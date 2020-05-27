@@ -119,10 +119,13 @@ if(emailValidationResult && !doesEmailAlreadyExist ){
 
       try{
           req.body.password=bcrypt.hashSync(req.body.password)
-          await User(req.body)
+          await User(req.body).then(response=>{
+            res.setHeader("location","/")
+        return res.status(201).end()}
+          )
 
-        res.setHeader("location","/")
-        return res.status(201).end()
+        // res.setHeader("location","/")
+        // return res.status(201).end()
         
       }catch(error){
         if(error.name=== 'SequelizeValidationError'){
