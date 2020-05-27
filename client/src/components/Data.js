@@ -84,6 +84,7 @@ createNewCourse(obj,emailAddress,password){
 
 
 createUser(obt){
+    console.log(`logging the new user ${obt}`)
     return fetch(`/api/users`,{
     method:"POST",
     headers:{"Content-Type":"application/json"},
