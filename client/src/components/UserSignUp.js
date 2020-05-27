@@ -49,11 +49,12 @@ submit=(e)=>{
       {
         // sign them in after sign up
         try{
-          console.log("signup line 52")
+          console.log(`signup line 52. email:${this.state.emailAddress},password:${this.state.password}`)
           const emailAddress= this.state.emailAddress
           const password=this.state.password
           const signIn= this.props.context.data.signIn
           
+
           signIn(emailAddress,password)
           
           .then(res=>{if(res.status===401){

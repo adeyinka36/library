@@ -46,7 +46,7 @@ deleteCourse(id,emailAddress,password){
 
      signIn  =async (emailAddress,password)=>{
          this._isMounted=true
-         console.log("sign in component line 49")
+         console.log(`data component line 49 . emaiil:${emailAddress},password:${password}`)
         // let encodedCrendtials=btoa(`${emailAddress}:${password}`)
         // let unmounted = false
          return fetch(`/api/users`,{
