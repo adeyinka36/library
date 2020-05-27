@@ -149,7 +149,7 @@ if(emailValidationResult && !doesEmailAlreadyExist ){
       
       
         
-        await  Course.find({},{createdAt:0,updatedAt}).populate('User')
+        await  Course.find({},{createdAt:0,updatedAt:0}).populate('User')
         .then(response=>{
           console.log(response)
          
