@@ -100,7 +100,7 @@ router.get('/',(req, res) => {
       const email=req.body.emailAddress
       const emailValidationResult= validateEmail(email);
 
-      let dataBaseEmails
+      
       await User.find().then(response=>dataBaseEmails=response)
       
       // let  dataBaseEmails= await User.find();
