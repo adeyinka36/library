@@ -44,7 +44,7 @@ submit=(e)=>{
     const newUser={emailAddress,password,firstName,lastName}
   
     console.log(`logging newuser from signup component : ${JSON.stringify(newUser)}`)
-    signUp(newUser)
+    signUp(JSON.stringify(newUser))
     .then(res=>{if(res.status===201)
       {
         // sign them in after sign up

@@ -96,6 +96,7 @@ router.get('/',(req, res) => {
   
  // Creates a user, sets the Location header to "/", and returns no content 
   router.post('/users',async(req,res,next)=>{
+    console.log(JSON.parse(req.body))
     console.log(`posting new user from backend: ${req.body}`)
     let dataBaseEmails
       const userPassword = req.body.password
