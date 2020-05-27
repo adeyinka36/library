@@ -168,7 +168,7 @@ if(emailValidationResult && !doesEmailAlreadyExist ){
       //     }
       //   ]
       // });
-       courses = courses.map(c=>c.toJSON())
+      //  courses = courses.map(c=>c.toJSON())
      
    res.status(200).json(courses)
   }) 
