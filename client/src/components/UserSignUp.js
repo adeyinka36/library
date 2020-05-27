@@ -43,7 +43,7 @@ submit=(e)=>{
   if(password===confirmPassword){
     const newUser={emailAddress,password,firstName,lastName}
   
-    console.log(`logging newuser from signup component : ${newUser}`)
+    console.log(`logging newuser from signup component : ${JSON.stringify(newUser)}`)
     signUp(newUser)
     .then(res=>{if(res.status===201)
       {
