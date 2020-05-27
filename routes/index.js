@@ -154,9 +154,9 @@ if(emailValidationResult && !doesEmailAlreadyExist ){
         .populate({path:'User',select:"emailAdress",select:"firstName",select:"lastName"})
         .then(res=>{
           console.log(res)
-          console.log(res.json())
+         
           
-          res.status(200).json(res)
+         return res.status(200).json(res)
         })
           .catch(err=>console.log(`get courses error: ${err}`))
          
