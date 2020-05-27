@@ -151,7 +151,14 @@ if(emailValidationResult && !doesEmailAlreadyExist ){
         let  courses
         
         await  Course.find()
-        .populate({path:'User',select:"emailAdress",select:"firstName",select:"lastName"}).then(res=>courses=res).catch(err=>console.log(`get courses error: ${err}`))
+        .populate({path:'User',select:"emailAdress",select:"firstName",select:"lastName"})
+        .then(res=>{
+          console.log(res)
+          console.log(res.json())
+          
+          res.status(200).json(res)
+        })
+          .catch(err=>console.log(`get courses error: ${err}`))
          
     
 
@@ -170,7 +177,7 @@ if(emailValidationResult && !doesEmailAlreadyExist ){
       // });
       //  courses = courses.map(c=>c.toJSON())
      
-   res.status(200).json(courses)
+   
   }) 
 
   

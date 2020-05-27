@@ -28,7 +28,7 @@ class Courses extends Component{
     
     
     {
-      
+      console.log(this.state.courses)
       if(this.state.courses.length>0){
         const content = this.state.courses.map(course =>{
           return(
