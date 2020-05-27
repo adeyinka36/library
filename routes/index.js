@@ -26,10 +26,9 @@ const authenticate= async (req,res,next)=>{
    
    if(credentials){
      let gottenUsers
-        mongoose.connection.on('error',(err)=>{console.log(`there was this error connecting to the database: ${err}`)})
-       await mongoose.connection.once("open",async()=>gottenUsers = await gottenUsers.find())
+await gottenUsers.find().then(response=>gottenUsers=response)
       //  let  gottenUsers =  await User.findAll();
-       gottenUsers=gottenUsers.map(u=>u.toJSON());
+      //  gottenUsers=gottenUsers.map(u=>u.toJSON());
 
        const foundUser = gottenUsers.find(u=>u.emailAddress===credentials.name);
 
@@ -101,11 +100,11 @@ router.get('/',(req, res) => {
       const email=req.body.emailAddress
       const emailValidationResult= validateEmail(email);
 
-      mongoose.connection.on('error',(err)=>{console.log(`there was this error connecting to the database: ${err}`)});
-      await mongoose.connection.once('open',async()=> dataBaseEmails= await User.find() )
+      let dataBaseEmails
+      await User.find().then(response=>dataBaseEmails=response)
       
       // let  dataBaseEmails= await User.find();
-         dataBaseEmails= dataBaseEmails.map(m=>m.toJSON())
+        //  dataBaseEmails= dataBaseEmails.map(m=>m.toJSON())
 
 
          const doesEmailAlreadyExist= dataBaseEmails.find(e=>e.emailAddress===email)
@@ -150,7 +149,7 @@ if(emailValidationResult && !doesEmailAlreadyExist ){
       
       
         
-        await  Course.find({},{password:0}).populate('User')
+        await  Course.find({},{createdAt:0,updatedAt}).populate('User')
         .then(response=>{
           console.log(response)
          
@@ -183,11 +182,9 @@ if(emailValidationResult && !doesEmailAlreadyExist ){
 // Returns course including users that own course for that id
   router.get('/courses/:id',async (req,res)=>{
     try{
-    let course
-    mongoose.connection.on("error",()=>console.log(`error connecing with database: ${err}`))
-    await mongoose.connection.once("open",async()=> course = await Course.findById(req.body.id)
-    .populate({path:'User',select:"emailAdress",select:"firstName",select:"lastName"}))
-
+  await  Course.findById(req.body.id).populate({path:'User',select:"emailAdress",select:"firstName",select:"lastName"})
+  .then(response=>res.status(200).json(response))
+  .catch(err=>console.log(`error from get request:${err}`))
 
 
     // let  course = await Course.findByPk(req.params.id, {
@@ -204,11 +201,11 @@ if(emailValidationResult && !doesEmailAlreadyExist ){
     //     ]
     //   });
   
-    course=course.toJSON()
+    // course=course.toJSON()
     
 
     
-   res.status(200).json(course)
+   
     }
     catch(err){
       console.log("course not found")
@@ -222,27 +219,23 @@ if(emailValidationResult && !doesEmailAlreadyExist ){
      try{
        req.body.userId=req.currentUser.id
          
-        let newCourse
-        mongoose.connection.on("error",()=>console.log(`error connecing with database: ${err}`))
-        mongoose.connection.once("open",async()=>{newCourse= await Course(req.body) })
-       
-       
-      //  const newCourse = await   Course.build(req.body)
+        let newCourse = await Course(req.body)
+        //  const newCourse = await   Course.build(req.body)
           await newCourse.save()
 
         let  data
-        mongoose.connection.on("error",()=>console.log(`error connecing with database: ${err}`))
-        mongoose.connection.once("open",async()=>{data= await Course.find({title:req.body.title}) })
+       await Course.find({title:req.body.title}).then(response=> {
+        res.setHeader("location",`api/courses/${response.id}`)
+       return res.status(201).end()})
        
           // = await Course.findAll({where:{"title":req.body.title}})
-          data  =  data.map(m=>m.toJSON())
+          // data  =  data.map(m=>m.toJSON())
         
         
-        res.setHeader("location",`api/courses/${data[0].id}`)
-        return res.status(201).end()
+       
         
      }catch(error){
-         if(error.name==="SequelizeValidationError"){
+         if(error.name==="ValidationError"){
              const errors = error.errors.map(err=>err.message)
              console.log(`there were the following validation errors : ${errors}`)
             return  res.status(400).json(errors)
@@ -258,13 +251,12 @@ if(emailValidationResult && !doesEmailAlreadyExist ){
   //Updates a course and returns no content
   router.put('/courses/:id',authenticate, async (req,res)=>{
     
-    let  userCourse
-    mongoose.connection.on("error",()=>console.log(`error connecing with database: ${err}`))
-    mongoose.connection.once("open",async()=>{userCourse= await Course.findById(req.params.id) })
+    let userofCourse
+     await Course.findById(req.params.id).then(response=>userofCourse=response)
        
     
     // = await Course.findByPk(req.params.id)
-    userCourse= userCourse.toJSON()
+    // userCourse= userCourse.toJSON()
     const userIdofCourse= userCourse.userId
     
     if(req.body.title && req.body.description){
@@ -273,18 +265,15 @@ if(emailValidationResult && !doesEmailAlreadyExist ){
       try{
      
 
-        let updateCourse 
-        
-        mongoose.connection.on("error",()=>console.log(`error connecing with database: ${err}`))
-        mongoose.connection.once("open",async()=>{updateCourse= await Course.replaceOne({_id:req.body.id},req.body) })
+        await Course.replaceOne({_id:req.body.id},req.body).then(res.status(204).end())
        
         // = await Course.findByPk(req.params.id);
         // await  updateCourse.update(req.body,{where:{id:req.params.id}});
         
-        res.status(204).end()
+        // res.status(204).end()
       
     }catch(error){
-        if(error.name==="SequelizeValidataionError"){
+        if(error.name==="ValidataionError"){
             console.log(`we have this validation error ${error}`)
         return res.status(403).json({message:"Please provide value for title and description"})
         }
@@ -313,14 +302,14 @@ else{
       }
       
     }
-})
 
+  })
 
     // Deletes a course and returns no content
   router.delete('/courses/:id',authenticate,async (req,res)=>{
     let userCourse 
-        mongoose.connection.on("error",()=>console.log(`error connecing with database: ${err}`))
-        mongoose.connection.once("open",async()=>{userCourse= await Course.findById(req.params.id) })
+    
+    await Course.findById(req.params.id).then(res=>userofCourse=userCourse)
        
     
     // = await Course.findByPk(req.params.id)
@@ -331,14 +320,13 @@ else{
     const userIdofCourse= userCourse.userId
     if (req.currentUser.id===userIdofCourse){
         
-        mongoose.connection.on("error",()=>console.log(`error connecing with database: ${err}`))
-       await  mongoose.connection.once("open",async()=>{Course.deleteOne(req.params.id) })
+       await  Course.deleteOne(req.params.id).then(res.status(204).end())
        
       
       // const courseTodelete = await Course.findByPk(req.params.id)
       // await courseTodelete.destroy()
       
-    res.status(204).end()
+    // res.status(204).end()
 }
  else{
      res.status(400).json({message:"you do not have access to this course"})
