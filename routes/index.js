@@ -20,7 +20,8 @@ mongoose.connect(db
 // authentication middlewear
 
 const authenticate= async (req,res,next)=>{
-  
+  console.log(`from authenticate:${req.body}`)
+  console.log(req)
    let  message = null
    const credentials= auth(req)
    
