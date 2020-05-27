@@ -148,10 +148,10 @@ if(emailValidationResult && !doesEmailAlreadyExist ){
   router.get('/courses',async (req,res)=>{
         let exceptions={}
       
-        const  courses= await  Course.find({select:"_id",select:"title",select:"description",select:"estimatedTime",select:"materialsNeeded"})
-        .populate({path:'User',select:"emailAdress",select:"firstName",select:"lastName"})
+        let  courses= await  Course.find({select:"_id",select:"title",select:"description",select:"estimatedTime",select:"materialsNeeded"})
+        .populate({path:'User',select:"emailAdress",select:"firstName",select:"lastName"}).then(res=>console.log(res)).catch(err=>console.log(`get courses error: ${err}`))
          
-        console.log(courses)
+    
 
       //   let courses = await Course.findAll({
       //   attributes: {
