@@ -38,13 +38,13 @@ submit=(e)=>{
   const firstName=this.state.firstName
   const lastName=this.state.lastName
   const signUp= this.props.context.data.createUser
-  const newUser={emailAddress,password,firstName,lastName}
-  
+ 
   // here i check to make sure the password and confirm passowrd from the form match before the signup
   if(password===confirmPassword){
-    
-    console.log(`logging newuser from signup component : ${this.state.emailAddress}`)
-    signUp({emailAddress,password,firstName,lastName})
+    const newUser={emailAddress,password,firstName,lastName}
+  
+    console.log(`logging newuser from signup component : ${newUser}`)
+    signUp(newUser)
     .then(res=>{if(res.status===201)
       {
         // sign them in after sign up
