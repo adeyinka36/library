@@ -152,11 +152,11 @@ if(emailValidationResult && !doesEmailAlreadyExist ){
         
         await  Course.find()
         .populate({path:'User',select:"emailAdress",select:"firstName",select:"lastName"})
-        .then(res=>{
-          console.log(res)
+        .then(response=>{
+          console.log(response)
          
           
-         return res.status(200).json(res)
+         return res.status(200).json(response)
         })
           .catch(err=>console.log(`get courses error: ${err}`))
          
