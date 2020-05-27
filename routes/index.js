@@ -83,7 +83,7 @@ router.get('/',(req, res) => {
   
 //   return currently authenticated user
   router.get('/users',authenticate,async (req,res)=>{
-     
+     console.log(`getuser route line 87 ${req.currntUser}`)
      user=req.currentUser
     res.status(200).json({id:user.id,
         firstName: user.firstName,
@@ -119,15 +119,12 @@ if(emailValidationResult && !doesEmailAlreadyExist ){
 
       try{
           req.body.password=bcrypt.hashSync(req.body.password)
-          await User(req.body).then(response=>{
-            res.setHeader("location","/")
-        return res.status(201).end()}
-          )
-
-        // res.setHeader("location","/")
-        // return res.status(201).end()
-        
+          await User(req.body)
+        console.log("line 123 index")
+        res.setHeader("location","/")
+        return res.status(201).end()
       }catch(error){
+        
         if(error.name=== 'SequelizeValidationError'){
             const errors = error.errors.map(err => err.message);
             console.error('Validation errors: ', errors);
