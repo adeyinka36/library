@@ -129,12 +129,25 @@ const UsersSchema= new Schema({
     password:{type:String, required:true},
 })
 
+
+
+const addition = new Schema({
+    id:{type:mongoose.Schema.Types.ObjectId,required:true},
+    firstName:{type:String,required:true},
+    lastName:{type:String,required:true},
+    emailAddress:{type:String,required:true}
+})
+
 const CoursesSchema= new Schema({
     title:{type:String, required:true},
     description:{type:String, required:true},
     estimatedTime:{type:String},
     materialsNeeded:{type:String},
-    ref:{type:mongoose.Schema.Types.ObjectId,ref:'User'}
+    UserId:{type:mongoose.Schema.Types.ObjectId,required:true},
+    firstName:{type:String,required:true},
+    lastName:{type:String,required:true},
+    emailAddress:{type:String,required:true}
+    
 })
 
 

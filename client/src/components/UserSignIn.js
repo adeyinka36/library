@@ -32,7 +32,7 @@ change=(e)=>{
 submit= async (event)=>{
 event.preventDefault();
 // here i get the value of previous location from  props if there has been a redirect
-const { from } = this.props.location.state || { from: { pathname: '/courses' } }
+// const { from } = this.props.location.state || { from: { pathname: '/courses' } }
 
 
  try{
@@ -60,11 +60,13 @@ else{
   let user=res
   this.props.context.make(user)
 
-  this.setState({authenticated:user,id:res.id,firstname:res.firstName,lastname:res.lastName})
+  this.setState({authenticated:user,id:res._id,firstname:res.firstName,lastname:res.lastName})
   Cookies.set('authenticatedUser', JSON.stringify(user), { expires: 1 });
 
 Cookies.set("userId",JSON.stringify(this.state.id))
-this.props.history.push(from)
+
+this.props.history.push("/")
+
 
 })
 
@@ -79,7 +81,7 @@ console.log(`this is the try catch error : ${err}`)
 
 }
     render(){
-
+      
       // here i check if errors exist in state so that i can render them into the form
       let error=  this.state.error
       let errList

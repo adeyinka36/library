@@ -35,13 +35,13 @@ deleteCourse(id,emailAddress,password){
    }
     getCourses(){
        return  fetch(`/api/courses`)
-
     }
     getCourseDetail(val){
+        console.log(val)
         return fetch(`/api/courses/${val}`)
     }
     // updateCourse(val){
-    //     return fetch(`http://localhost:5000/api/courses/${val}`)
+    //     return fetch(`/api/courses/${val}`)
     // }
 
      signIn  =async (emailAddress,password)=>{
@@ -60,7 +60,7 @@ deleteCourse(id,emailAddress,password){
 
 
 createNewCourse(obj,emailAddress,password){
-    return fetch(`/api/courses/`,{
+    return fetch(`http://localhost:5000/api/courses/`,{
              method:"POST",
              headers:{
                 'Content-Type': 'application/json',
@@ -84,8 +84,8 @@ createNewCourse(obj,emailAddress,password){
 
 
 createUser(obt){
-    console.log(`logging the new user ${obt}`)
-    return fetch(`/api/users`,{
+    
+    return fetch(`http://localhost:5000/api/users`,{
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body:JSON.stringify(obt)

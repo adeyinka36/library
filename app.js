@@ -14,23 +14,24 @@ const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'tr
 
 // create the Express app
 const app = express();
+const cors=require('cors')
 
 // setup morgan which gives us http request logging
-app.use(morgan('dev'));
 
+app.use(cors())
 app.use(bodyParser.json());
 
-app.use((req,res,next)=>{
-  res.header("Access-Control-Allow-Origin","*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,Authorization");
-  if(req.method==="OPTIONS"){
-    res.header("Access-Control-Allow-Methods","PUT,POST,PATCH,DELETE,GET");
-    return res.status(200).json({});
-  }
+// app.use((req,res,next)=>{
+//   res.header("Access-Control-Allow-Origin","*");
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,Authorization");
+//   if(req.method==="OPTIONS"){
+//     res.header("Access-Control-Allow-Methods","PUT,POST,PATCH,DELETE,GET");
+//     return res.status(200).json({});
+//   }
            
  
-  next()
-})
+//   next()
+// })
 
 // TODO setup your api routes here
 app.use("/api/",router)

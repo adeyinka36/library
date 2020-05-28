@@ -21,7 +21,7 @@ mongoose.connect(db
 
 const authenticate= async (req,res,next)=>{
   console.log(`from authenticate:${req.body}`)
-  console.log(req)
+  
    let  message = null
    const credentials= auth(req)
    
@@ -38,6 +38,7 @@ await User.find().then(response=>gottenUsers=response)
         
             if(authenticated){
             req.currentUser = foundUser
+            console.log("assigned")
             }
             else{
             message= "Incorrect password "
@@ -84,9 +85,9 @@ router.get('/',(req, res) => {
   
 //   return currently authenticated user
   router.get('/users',authenticate,async (req,res)=>{
-     console.log(`getuser route line 87 ${req.currntUser}`)
+     console.log(`getuser route line 87 ${req.currentUser}`)
      user=req.currentUser
-    res.status(200).json({id:user.id,
+    res.status(200).json({id:user._id,
         firstName: user.firstName,
         lastName: user.lastName,
         emailAddress: user.emailAddress})
@@ -96,15 +97,14 @@ router.get('/',(req, res) => {
   
  // Creates a user, sets the Location header to "/", and returns no content 
   router.post('/users',async(req,res,next)=>{
-    console.log(JSON.parse(req.body))
-    console.log(`posting new user from backend: ${req.body}`)
+  
     let dataBaseEmails
       const userPassword = req.body.password
       const email=req.body.emailAddress
       const emailValidationResult= validateEmail(email);
 
       
-      await User.find().then(response=>dataBaseEmails=response)
+      await User.find().then(response=>dataBaseEmails=response )
       
       // let  dataBaseEmails= await User.find();
         //  dataBaseEmails= dataBaseEmails.map(m=>m.toJSON())
@@ -122,13 +122,13 @@ if(emailValidationResult && !doesEmailAlreadyExist ){
 
       try{
           req.body.password=bcrypt.hashSync(req.body.password)
-          await User(req.body)
-        console.log("line 123 index")
+          const newUser=await User(req.body)
+           await newUser.save()
         res.setHeader("location","/")
         return res.status(201).end()
       }catch(error){
         
-        if(error.name=== 'SequelizeValidationError'){
+        if(error.name=== 'ValidationError'){
             const errors = error.errors.map(err => err.message);
             console.error('Validation errors: ', errors);
             return res.status(400).json(errors)
@@ -152,9 +152,9 @@ if(emailValidationResult && !doesEmailAlreadyExist ){
       
       
         
-        await  Course.find({},{createdAt:0,updatedAt:0}).populate('User')
+        await  Course.find()
         .then(response=>{
-          console.log(response)
+          
          
           
          return res.status(200).json(response)
@@ -185,8 +185,12 @@ if(emailValidationResult && !doesEmailAlreadyExist ){
 // Returns course including users that own course for that id
   router.get('/courses/:id',async (req,res)=>{
     try{
-  await  Course.findById(req.body.id).populate({path:'User',select:"emailAdress",select:"firstName",select:"lastName"})
-  .then(response=>res.status(200).json(response))
+      console.log(`logging the body ${ req.params.id}`)
+  await  Course.findById(req.params.id).populate({path:'User',select:"emailAddress",select:"firstName",select:"lastName"})
+
+  .then(response=>{
+        console.log("hey"+response)
+        res.status(200).json(response)})
   .catch(err=>console.log(`error from get request:${err}`))
 
 
@@ -220,15 +224,22 @@ if(emailValidationResult && !doesEmailAlreadyExist ){
   router.post('/courses/',authenticate, async (req,res,next)=>{
       
      try{
-       req.body.userId=req.currentUser.id
-         
-        let newCourse = await Course(req.body)
+       console.log(req.body)
+     
+
+      req.body.UserId=req.currentUser._id
+      req.body.firstName=req.currentUser.firstName
+      req.body.lastName=req.currentUser.lastName
+      req.body.emailAddress=req.currentUser.emailAddress
+      
+       
+        let newCourse = await new Course(req.body)
         //  const newCourse = await   Course.build(req.body)
           await newCourse.save()
 
         let  data
        await Course.find({title:req.body.title}).then(response=> {
-        res.setHeader("location",`api/courses/${response.id}`)
+        res.setHeader("location",`api/courses/${response._id}`)
        return res.status(201).end()})
        
           // = await Course.findAll({where:{"title":req.body.title}})
@@ -257,18 +268,24 @@ if(emailValidationResult && !doesEmailAlreadyExist ){
     let userofCourse
      await Course.findById(req.params.id).then(response=>userofCourse=response)
        
+     
     
     // = await Course.findByPk(req.params.id)
     // userCourse= userCourse.toJSON()
-    const userIdofCourse= userCourse.userId
+    const userIdofCourse= userofCourse.UserId
     
     if(req.body.title && req.body.description){
-     if (req.currentUser.id===userIdofCourse){
+     if (req.currentUser._id.toString()===userIdofCourse.toString()){
          
       try{
-     
+         Course.updateOne({_id:req.params.id},
+         {title:req.body.title,
+         description:req.body.description,
+         materialsNeeded:req.body.materialsNeeded,
+         estimatedTime:req.body.estimatedTime}).then(res.status(204).end()
+         )
 
-        await Course.replaceOne({_id:req.body.id},req.body).then(res.status(204).end())
+        // await Course.updateOne({_id:req.body.id},req.body).then(res.status(204).end())
        
         // = await Course.findByPk(req.params.id);
         // await  updateCourse.update(req.body,{where:{id:req.params.id}});
@@ -310,20 +327,20 @@ else{
 
     // Deletes a course and returns no content
   router.delete('/courses/:id',authenticate,async (req,res)=>{
-    let userCourse 
+    let userofCourse 
     
-    await Course.findById(req.params.id).then(res=>userofCourse=userCourse)
+    await Course.findById(req.params.id).then(res=>userofCourse=res)
        
     
     // = await Course.findByPk(req.params.id)
     
     
     
-    if (!userCourse){return res.status(404).json({message:"Course not found"})}
-    const userIdofCourse= userCourse.userId
-    if (req.currentUser.id===userIdofCourse){
+    if (!userofCourse){return res.status(404).json({message:"Course not found"})}
+    const userIdofCourse= userofCourse.UserId
+    if (req.currentUser.id.toString()===userIdofCourse.toString()){
         
-       await  Course.deleteOne(req.params.id).then(res.status(204).end())
+       await  Course.deleteOne({_id:req.params.id}).then(res.status(204).end())
        
       
       // const courseTodelete = await Course.findByPk(req.params.id)

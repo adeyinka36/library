@@ -13,10 +13,14 @@ class Courses extends Component{
     }
    
     
+    
     componentDidMount=()=>{
       
       this.props.context.data.getCourses().then(response=>response.json())
-      .then(res=>this.setState({courses:res}))
+      .then(res=>
+        {console.log(this.state.courses)
+        this.setState({courses:res})})
+      
       .catch(err=>console.log(`here is the error : ${err}`))
     }
   
@@ -28,12 +32,12 @@ class Courses extends Component{
     
     
     {
-      console.log(this.state.courses)
+      
       if(this.state.courses.length>0){
         const content = this.state.courses.map(course =>{
           return(
               <div key={course._id.toString()} className="grid-33">
-              <Link className="course--module course--link" to={`/courses/${course.id}`}>
+              <Link className="course--module course--link" to={`/courses/${course._id.toString()}`}>
                   <h4 className="course--label">Course</h4>
                   <h3 className="course--title">{course.title}</h3>
               </Link>

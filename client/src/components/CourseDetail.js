@@ -37,19 +37,21 @@ else{
 }
 
     componentDidMount=()=>{
-    
+  
       
      
       this.props.context.data.getCourseDetail(this.props.match.params.id)
       .then(response=>{if(response.status!==200){ return this.props.history.push("/NotFound")}
       else{
+       
        return response.json()
+       
       }})
       .then(res=>{
-        console.log(res)
+        console.log("this is the response:"+res.title)
         this.setState({course:res,
-                        id:res.id,
-                      userId:res.User.id
+                        id:res._id,
+                      userId:res.UserId
                       
         })})
 
@@ -57,6 +59,7 @@ else{
        
     
      .catch(err=>{
+       console.log("this is the error "+err)
       this.props.history.push("/NotFound")
       
        return})
@@ -71,7 +74,7 @@ if (this.props.context.authentication){
 else{
   userId=null
 }
-let idVerify= Number(this.state.course.userId)===Number(userId)
+let idVerify= this.state.course.UserId===userId
 
 
 
@@ -100,7 +103,7 @@ return(
             <div className="course--header">
               <h4 className="course--label">Course</h4>
               <h3 className="course--title">{this.state.course.title}</h3>
-              <p>{`${this.state.course.User.firstName} ${this.state.course.User.lastName}`}</p>
+              <p>{`${this.state.course.firstName} ${this.state.course.lastName}`}</p>
             </div>
             <div className="course--description">
               <p>{this.state.course.description}</p>

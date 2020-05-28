@@ -45,20 +45,21 @@ class UpdateCourse extends Component{
        return response.json()}})
     
       .then(res=>{this.setState({course:res,
-        courseId:res.id,
+        courseId:res._id,
         emailAddress:Cookies.getJSON('authenticatedUser').emailAddress,
       password:Cookies.getJSON("authenticatedUser").password})
 
       // checking for verification to prevent update by unauthorized
       
       let userId
+     
       if (this.props.context.authentication){
         userId=this.props.context.authentication.id
       }
       else{
         userId=null
       }
-      let idVerify= Number(this.state.course.userId)===Number(userId)
+      let idVerify=this.state.course.UserId===userId
       if(!idVerify){
         return this.props.history.push("/forbidden")
       }
@@ -165,7 +166,7 @@ class UpdateCourse extends Component{
                 <h4 className="course--label">Course</h4>
                 <div><input id="title" name="title" type="text" className="input-title course--title--input" defaultValue={this.state.course.title}
                      onChange={this.change}/></div>
-                <p>{`${this.state.course.User.firstName} ${this.state.course.User.lastName}`}</p>
+                <p>{`${this.state.course.firstName} ${this.state.course.lastName}`}</p>
               </div>
               <div className="course--description">
                 <div><textarea id="description" name="description" className=""  defaultValue={this.state.course.description} onChange={this.change}></textarea></div>
